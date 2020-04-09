@@ -3,6 +3,10 @@ require_relative '../lib/time_mod'
 
 describe 'Parameters' do
   context 'AM/PM tests' do
+    it 'works with the example given in the assignment' do
+      expect(TimeMod::add("9:10 AM", 200)).to eq("12:30 PM")
+    end
+
     it 'works with a +1 offset' do
       expect(TimeMod::add("12:55 PM", 1)).to eq("12:56 PM")
     end
