@@ -32,7 +32,7 @@ describe 'Parameters' do
     it 'exhaustive set 0 offset for all times' do
       # This is overkill but proves that all the inputs are parsed and produced
       (1..12).each do |hour|
-        (0..0).each do |minute|
+        (0..59).each do |minute|
           ['AM','PM'].each do |am_or_pm|
             some_time = "#{hour}:#{'%02d' % minute} #{am_or_pm}"
             expect(TimeMod::add(some_time, 0)).to eq(some_time)
@@ -66,4 +66,49 @@ describe 'Parameters' do
       end
     end
   end
+
+  context '24 hour tests' do
+    it 'works with a +1 offset' do
+      expect(TimeMod::add("12:55", 1)).to eq("12:56")
+    end
+
+    it 'works with a -1 offset' do
+      expect(TimeMod::add("14:15", -1)).to eq("14:14")
+    end
+
+    it 'can cross the noon hour boundary in both directions' do
+      expect(TimeMod::add("11:05", 122)).to eq("13:07")
+      expect(TimeMod::add("13:07", -122)).to eq("11:05")
+    end
+
+    it 'allows for leading 0s on input hours' do
+      expect(TimeMod::add("07:05", 55)).to eq("8:00")
+    end
+
+    it 'midnight to midnight' do
+      # the 00:00 format for midnight is read and written
+      expect(TimeMod::add("0:00", 24*60)).to eq("0:00")
+      # the 24:00 format of midnight is read but not written possible bug
+      expect(TimeMod::add("24:00", 24*60)).to eq("0:00")
+    end
+
+    it 'midnight to noon backwards' do
+      expect(TimeMod::add("24:00", -12*60)).to eq("12:00")
+    end
+
+    it 'can go a year and a minute into the future' do
+      expect(TimeMod::add("17:02", 365*24*60+1)).to eq("17:03")
+    end
+
+    it 'exhaustive set 0 offset for all times' do
+      # This is overkill but proves that all the inputs are parsed and produced
+      (1..12).each do |hour|
+        (0..0).each do |minute|
+            some_time = "#{hour}:#{'%02d' % minute}"
+            expect(TimeMod::add(some_time, 0)).to eq(some_time)
+        end
+      end
+    end
+  end
+
 end

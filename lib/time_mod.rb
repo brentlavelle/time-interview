@@ -22,7 +22,7 @@ module TimeMod
     # Handle one of the 2 versions of midnight first
     return 0 if time_string == '24:00'
 
-    raise ArgumentError unless m = (time_string.match /^([12]?\d)\:(\d\d)$/)
+    raise ArgumentError unless m = (time_string.match /^([012]?\d)\:(\d\d)$/)
     m[1].to_i * 60 + m[2].to_i
   end
 
@@ -44,13 +44,14 @@ module TimeMod
       ampm = 'PM'
     end
     "#{hour}:#{'%02d' % minute_pos} #{ampm}"
-    "#{hour}:#{'%02d' % minute_pos} #{ampm}"
   end
 
   def self.format_time_24(minutes)
     minutes    = minutes % (60 * 24) # Removes the day offset
     minute_pos = minutes % 60
     hour_pos   = (minutes - minute_pos) / 60
+    "#{hour_pos}:#{'%02d' % minute_pos}"
+
   end
 
 
