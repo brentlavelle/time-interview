@@ -54,20 +54,18 @@ describe 'Parameters' do
       expect { TimeMod::add("12:30 AM", 10.5) }.to raise_error(ArgumentError)
     end
 
-    it 'needs the time to be a string' do
-      expect { TimeMod::add(1215, 1) }.to raise_error(ArgumentError)
-    end
-
     it 'needs the time formatted correctly' do
       [
+          '12:30AM',
+          '12:31 am',
+          '12:32 pm',
           '123:30 AM',
           '9:130 AM',
           '11:13 TM',
           '11:1 AM',
           '1201 AM',
-          '',
-          '∰',
-          '﷽',
+          '∰ AM',
+          '﷽ PM',
       ].each do |time|
         expect { TimeMod::add(time, 2) }.to raise_error(ArgumentError)
       end
@@ -130,6 +128,47 @@ describe 'Parameters' do
             expect(TimeMod::add(some_time, 0)).to eq(some_time)
         end
       end
+    end
+  end
+
+  context '24 hour negative tests' do
+    it 'use a Float instead of an int' do
+      expect { TimeMod::add("12:30", 10.5) }.to raise_error(ArgumentError)
+    end
+
+    it 'needs the time to be a string' do
+      expect { TimeMod::add(1215, 1) }.to raise_error(ArgumentError)
+    end
+
+    it 'needs the time formatted correctly' do
+      [
+          '123:30',
+          '9:130',
+          '11:1',
+          '1201',
+          '',
+          '∰',
+          '﷽',
+      ].each do |time|
+        expect { TimeMod::add(time, 2) }.to raise_error(ArgumentError)
+      end
+    end
+
+    it 'restricts minutes to be in the 00 to 59 range' do
+      expect { TimeMod::add('7:60', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('09:99', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('12:99', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('12:-1', 9) }.to raise_error(ArgumentError)
+    end
+
+    it 'restricts hours to be in the 00 to 24 range' do
+      expect { TimeMod::add('25:59 AM', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('99:40 PM', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('-1:40 PM', 9) }.to raise_error(ArgumentError)
+    end
+
+    it 'if the hour is 24 the minute has to be 0' do
+      expect { TimeMod::add('24:01', 9) }.to raise_error(ArgumentError)
     end
   end
 

@@ -27,6 +27,8 @@ module TimeMod
     return 0 if time_string == '24:00'
 
     raise ArgumentError unless m = (time_string.match /^([012]?\d)\:(\d\d)$/)
+    raise ArgumentError if m[1].to_i > 23
+    raise ArgumentError if  m[2].to_i > 59
     m[1].to_i * 60 + m[2].to_i
   end
 
@@ -55,7 +57,6 @@ module TimeMod
     minute_pos = minutes % 60
     hour_pos   = (minutes - minute_pos) / 60
     "#{hour_pos}:#{'%02d' % minute_pos}"
-
   end
 
 
