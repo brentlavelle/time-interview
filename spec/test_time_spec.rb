@@ -36,6 +36,11 @@ describe 'Parameters' do
       expect(TimeMod::add("7:02 AM", 365*24*60+1)).to eq("7:03 AM")
     end
 
+    it 'it works with max int and beyond' do
+      expect(TimeMod::add("02:00 AM", 2147483647)).to eq("4:07 AM")
+      expect(TimeMod::add("2:00 AM", 2147483648)).to eq("4:08 AM")
+    end
+
     it 'exhaustive set 0 offset for all times' do
       # This is overkill but proves that all the inputs are parsed and produced
       (1..12).each do |hour|
@@ -118,6 +123,11 @@ describe 'Parameters' do
 
     it 'can go a year and a minute into the future' do
       expect(TimeMod::add("17:02", 365*24*60+1)).to eq("17:03")
+    end
+
+    it 'it works with negative max int and beyond' do
+      expect(TimeMod::add("17:02", -2147483648)).to eq("14:54")
+      expect(TimeMod::add("17:02", -2147483649)).to eq("14:53")
     end
 
     it 'exhaustive set 0 offset for all times' do
