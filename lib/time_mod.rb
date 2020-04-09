@@ -2,6 +2,10 @@
 module TimeMod
   def self.parse_to_minutes_12(time_string)
     raise ArgumentError unless m = time_string.match(/^([01]?\d)\:(\d\d) ([AP]M)$/)
+    raise ArgumentError if m[1].to_i == 0
+    raise ArgumentError if m[1].to_i > 12
+    raise ArgumentError if  m[2].to_i > 59
+
     if m[3] == 'AM'
       if m[1] == '12'
         hour = 0

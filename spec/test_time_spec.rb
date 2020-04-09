@@ -34,7 +34,6 @@ describe 'Parameters' do
 
     it 'can go a year and a minute into the future' do
       expect(TimeMod::add("7:02 AM", 365*24*60+1)).to eq("7:03 AM")
-
     end
 
     it 'exhaustive set 0 offset for all times' do
@@ -72,6 +71,21 @@ describe 'Parameters' do
       ].each do |time|
         expect { TimeMod::add(time, 2) }.to raise_error(ArgumentError)
       end
+    end
+
+    it 'restricts minutes to be in the 00 to 59 range' do
+      expect { TimeMod::add('7:60 AM', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('09:99 PM', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('12:99 AM', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('12:-1 AM', 9) }.to raise_error(ArgumentError)
+    end
+
+    it 'restricts hours to be in the 01 to 12 range' do
+      expect { TimeMod::add('00:00 AM', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('0:05 PM', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('13:59 AM', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('16:40 PM', 9) }.to raise_error(ArgumentError)
+      expect { TimeMod::add('-1:40 PM', 9) }.to raise_error(ArgumentError)
     end
   end
 
