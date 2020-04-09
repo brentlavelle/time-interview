@@ -1,7 +1,7 @@
 #"[H]H:MM {AM|PM}", and the second argument is a signed integer indicating the number of minutes to add to the time given in the first argument.
 module TimeMod
   def self.parse_to_minutes_12(time_string)
-    raise ArgumentError unless m = time_string.match(/^(1?\d)\:(\d\d) ([AP]M)$/)
+    raise ArgumentError unless m = time_string.match(/^([01]?\d)\:(\d\d) ([AP]M)$/)
     if m[3] == 'AM'
       if m[1] == '12'
         hour = 0

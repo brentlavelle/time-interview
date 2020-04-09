@@ -16,6 +16,10 @@ describe 'Parameters' do
       expect(TimeMod::add("12:07 PM", -62)).to eq("11:05 AM")
     end
 
+    it 'allows for leading 0s on input hours' do
+      expect(TimeMod::add("07:05 AM", 55)).to eq("8:00 AM")
+    end
+
     it 'midnight to midnight' do
       expect(TimeMod::add("12:00 AM", 24*60)).to eq("12:00 AM")
     end
